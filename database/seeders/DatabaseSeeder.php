@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         // ingin --seed factory juga sertakan
 
         $this->call([HewanSeeder::class, UserSeeder::class]);
-        User::factory(2)->create();
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

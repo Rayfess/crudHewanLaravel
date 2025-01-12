@@ -20,9 +20,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'password',
     ];
-    protected $guarded = ['password'];
-    protected $table = ['users'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -38,10 +38,11 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    // Menambahkan setter untuk password    
-    public function setPasswordAttribute($value)
+    protected function casts(): array
     {
-        $this->attributes['password'] = bcrypt($value);  // Enkripsi password menggunakan bcrypt
-        return $this->attributes['password'];  // Tidak perlu return di mutator
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }
