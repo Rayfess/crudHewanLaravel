@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\HewanRequest;
 use Illuminate\Http\Request;
 use App\Models\Hewan;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class HewanController extends Controller
 {

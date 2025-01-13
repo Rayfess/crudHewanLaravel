@@ -18,10 +18,20 @@ class UserSeeder extends Seeder
     {
         DB::table("users")->insert([
             [
+                'role' => 'user',
                 'name' => 'Suciipto',
-                'email' => 'jaya@gmail.com',
+                'email' => 'jaya@mail.com',
                 "email_verified_at" => now(),
-                'password' => 'fu123',
+                'password' => bcrypt('jaya123'),
+                'created_at' => now(),
+                "remember_token" => Str::random(10),
+            ],
+            [
+                'role' => 'admin',
+                'name' => 'admin',
+                'email' => 'admin@mail.com',
+                "email_verified_at" => now(),
+                'password' => bcrypt('admin123'),
                 'created_at' => now(),
                 "remember_token" => Str::random(10),
             ],

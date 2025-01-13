@@ -1,14 +1,17 @@
 <x-layout>
-  <h1>Login</h1>
-    <form action="{{ route('login') }}" method="POST">
-        @csrf
+  <h2>Login</h2>
+  <form action="{{ route('login') }}" method="POST">
+    @csrf
+    <div>
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required>
-        <br>
+        <input type="email" name="email" required>
+    </div>
+    <div>
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
-        <br>
+        <input type="password" name="password" required>
+    </div>
+    <div>
         <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="{{ route('register') }}">Register here</a></p>
+    </div>
+</form>
 </x-layout>

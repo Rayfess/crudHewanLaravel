@@ -2,64 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    // Show registration form
-    public function showRegistrationForm()
+
+    // Menampilkan form registrasi
+    public function showRegis()
     {
         return view('auth.register');
     }
 
-    // Handle registration
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('hewan.index'); // Redirect to a dashboard or home page after registration
-    }
-
-    // Show login form
-    public function showLoginForm()
+    public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Handle login
+
+    public function register(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:user,admin', // role hanya bisa user atau admin
+        ]);
+
+
+
+        // Menyimpan pengguna baru
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            "email_verified_at" => now(),
+            "remember_token" => Str::random(10),
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+        ]);
+
+        return redirect()->route('login');
+    }
+
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required|min:8',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('dashboard'); // Redirect to a dashboard or home page after successful login
-        }
+        // Cari user berdasarkan email yang dimasukkan
+        $user = User::where('email', $request->email)->first();
 
-        return back()->withErrors(['email' => 'These credentials do not match our records.']);
+        // Cek apakah user ditemukan dan password yang dimasukkan cocok
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Jika cocok, simpan data user ke session
+            Session::put('user', $user);
+
+            // Arahkan pengguna ke halaman utama setelah login
+            return redirect()->route('hewan.index');
+        } else {
+            // Jika email atau password salah, kembalikan ke form login dengan error
+            return redirect()->route('login')->withErrors('Email atau password salah');
+        }
     }
 
-    // Handle logout
-    public function logout(Request $request)
+    public function logout()
     {
-        Auth::logout();
-        return redirect()->route('login');
+        // Menghapus data user yang ada di session
+        Session::forget('user');
+
+        // Mengarahkan pengguna kembali ke halaman login setelah logout
+        return redirect('/login');
     }
 }
