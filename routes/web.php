@@ -22,7 +22,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/hewan', function () {
-        return view('hewan.index');
+    Route::get('hewan', function () {
+        return view('home');
     });
 });

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -34,8 +35,6 @@ class AuthController extends Controller
             'role' => 'required|in:user,admin', // role hanya bisa user atau admin
         ]);
 
-
-
         // Menyimpan pengguna baru
         $user = User::create([
             'name' => $validated['name'],
@@ -62,7 +61,7 @@ class AuthController extends Controller
         // Cek apakah user ditemukan dan password yang dimasukkan cocok
         if ($user && Hash::check($request->password, $user->password)) {
             // Jika cocok, simpan data user ke session
-            Session::put('user', $user);
+            Auth::login($user);
 
             // Arahkan pengguna ke halaman utama setelah login
             return redirect()->route('hewan.index');
@@ -75,9 +74,9 @@ class AuthController extends Controller
     public function logout()
     {
         // Menghapus data user yang ada di session
-        Session::forget('user');
+        Auth::logout();
 
         // Mengarahkan pengguna kembali ke halaman login setelah logout
-        return redirect('/login');
+        return redirect('login');
     }
 }
