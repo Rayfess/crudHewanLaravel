@@ -3,11 +3,14 @@
     <div class="row mb-3">
       <div class="col">
         @auth
+        @if(Auth::user()->role === 'admin') 
+        <!-- Tampilkan tombol tambah data hanya untuk admin -->
         <div class="col">
           <a href="{{ route('hewan.create') }}">
             <button class="btn btn-primary">Tambah Data</button>
           </a>
         </div>
+      @endif
           <p>Selamat datang, {{ auth()->user()->name }}</p>
           <form action="{{ route('logout') }}" method="POST">
             @csrf

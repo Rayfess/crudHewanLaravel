@@ -21,7 +21,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('hewan', function () {
         return view('home');
     });
