@@ -26,7 +26,9 @@
                   <th>Berat Hewan (Kg)</th>
                   <th>Panjang Hewan (Cm)</th>
                   <th>Deskripsi Hewan</th>
+                  @if(Auth::user()->role === 'admin') 
                   <th>Aksi</th>
+                @endif
                 </tr>
               </thead>
               <tbody>
@@ -45,6 +47,8 @@
                     <td>{{ $data->berat_hewan }}</td>
                     <td>{{ $data->panjang_hewan }}</td>
                     <td>{{ Str::words($data->deskripsi_hewan, 50, '...') }}</td>
+                    @if(Auth::user()->role === 'admin') 
+                    <!-- Tampilkan tombol tambah data hanya untuk admin -->
                     <td>
                       <a href="{{ route('hewan.edit', $data->id) }}">
                         <button class="mb-2 btn btn-warning">Edit</button>
@@ -55,6 +59,7 @@
                         <button class="btn btn-danger">Delete</button>
                       </form>
                     </td>
+                  @endif
                   </tr>
               </tbody>
               @endforeach
