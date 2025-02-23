@@ -3,14 +3,17 @@
     <div class="row mb-3">
       <div class="col">
         @auth
-        @if(Auth::user()->role === 'admin') 
-        <!-- Tampilkan tombol tambah data hanya untuk admin -->
-        <div class="col">
-          <a href="{{ route('hewan.create') }}">
-            <button class="btn btn-primary">Tambah Data</button>
-          </a>
-        </div>
-      @endif
+          @php
+            $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+          @endphp
+          @if ($isAdmin)
+            <!-- Tampilkan tombol tambah data hanya untuk admin -->
+            <div class="col">
+              <a href="{{ route('hewan.create') }}">
+                <button class="btn btn-primary">Tambah Data</button>
+              </a>
+            </div>
+          @endif
           <p>Selamat datang, {{ auth()->user()->name }}</p>
           <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -26,9 +29,9 @@
                   <th>Berat Hewan (Kg)</th>
                   <th>Panjang Hewan (Cm)</th>
                   <th>Deskripsi Hewan</th>
-                  @if(Auth::user()->role === 'admin') 
-                  <th>Aksi</th>
-                @endif
+                  @if ($isAdmin)
+                    <th>Aksi</th>
+                  @endif
                 </tr>
               </thead>
               <tbody>
@@ -47,29 +50,29 @@
                     <td>{{ $data->berat_hewan }}</td>
                     <td>{{ $data->panjang_hewan }}</td>
                     <td>{{ Str::words($data->deskripsi_hewan, 50, '...') }}</td>
-                    @if(Auth::user()->role === 'admin') 
-                    <!-- Tampilkan tombol tambah data hanya untuk admin -->
-                    <td>
-                      <a href="{{ route('hewan.edit', $data->id) }}">
-                        <button class="mb-2 btn btn-warning">Edit</button>
-                      </a>
-                      <form action="{{ route('hewan.destroy', $data->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger">Delete</button>
-                      </form>
-                    </td>
-                  @endif
+                    @if ($isAdmin)
+                      <!-- Tampilkan tombol tambah data hanya untuk admin -->
+                      <td>
+                        <a href="{{ route('hewan.edit', $data->id) }}">
+                          <button class="mb-2 btn btn-warning">Edit</button>
+                        </a>
+                        <form action="{{ route('hewan.destroy', $data->id) }}" method="POST">
+                          @csrf
+                          @method('DELETE')
+                          <button class="btn btn-danger">Delete</button>
+                        </form>
+                      </td>
+                    @endif
                   </tr>
+                @endforeach
               </tbody>
-              @endforeach
             </table>
           </div>
         </div>
-        @else
-          <p>Silakan login untuk melanjutkan</p>
-        @endauth
-      </div>
+      @else
+        <p>Silakan login untuk melanjutkan</p>
+      @endauth
     </div>
-    
+  </div>
+
 </x-layout>
